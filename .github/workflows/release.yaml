@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: 'Azure authentication'
+        uses: azure/docker-login@v1
+        with:
+          login-server: 'swarm.azurecr.io'
+          username: ${{ secrets.AZURE_DOCKER_USERNAME }}
+          password: ${{ secrets.AZURE_DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+
+      - name: 'Build and Push Container'
+        run: docker buildx build --platform=linux/amd64,linux/arm/v7,linux/arm64/v8 --tag=swarm.azurecr.io/hkp-parking-dashboard:latest --push .

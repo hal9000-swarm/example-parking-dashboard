@@ -1,0 +1,64 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #ffffff;
+    background: linear-gradient(
+            rgba(0, 0, 0, 0.6),
+            rgba(0, 0, 0, 0.6)
+    ),
+    url(../img/background.jpg);
+}
+
+.column {
+    float: left;
+    width: 33.33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.data {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.data p {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.fa-solid {
+    font-size: 12rem;
+}
+
+.free {
+    color: #00a86b
+}
+
+.occupied {
+    color: #ea9a2c
+}
+
+.full {
+    color: #dc1e1e
+}
+
+.right {
+    float: right;
+    margin-right: 1rem;
+}
+
+.header {
+    margin-left: 1rem;
+    margin-top: 1rem;
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.center {
+    text-align: center;
+}

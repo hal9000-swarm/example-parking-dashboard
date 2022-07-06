@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swarm Analytics Parking Dashboard</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="row header">
+    <img src="img/swarm.svg" width="500" alt="Swarm Analytics Logo"/>
+</div>
+<div class="row">
+    <div class="center">
+        <h1>Verfügbarkeit / Availability</h1>
+    </div>
+    <div id="utilization-column-ug2" class="column">
+        <i class="fa-solid fa-circle-down"></i>
+        <div id="utilization-ug2" class="data"><p>loading...</p></div>
+    </div>
+    <div id="utilization-column-ug1" class="column">
+        <i class="fa-solid fa-circle-right"></i>
+        <div id="utilization-ug1" class="data"><p>loading...</p></div>
+    </div>
+    <div id="eparking-column" class="column">
+        <i class="fa-solid fa-charging-station"></i>
+        <div id="eparking" class="data"><p>loading...</p></div>
+    </div>
+</div>
+<div class="row">
+    <p class="right"><script>document.write(new Date().getFullYear())</script> Swarm Analytics</p>
+</div>
+
+<script src="https://kit.fontawesome.com/2777eb502d.js" crossorigin="anonymous"></script>
+<script src="js/data.js"></script>
+</body>
+</html>
