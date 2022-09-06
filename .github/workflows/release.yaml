@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ main ]
+    branches: [ three-decks-with-eparking ]
 
 jobs:
   release:
@@ -24,4 +24,4 @@ jobs:
           version: latest
 
       - name: 'Build and Push Container'
-        run: docker buildx build --platform=linux/amd64,linux/arm/v7,linux/arm64/v8 --tag=swarm.azurecr.io/hkp-parking-dashboard:latest --push .
+        run: docker buildx build --platform=linux/amd64,linux/arm/v7,linux/arm64/v8 --tag=swarm.azurecr.io/twi-parking-dashboard:latest --push .

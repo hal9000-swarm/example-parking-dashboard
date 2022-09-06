@@ -1,12 +1,16 @@
 const COLOR_LIMIT_FREE = 0.3;
 const COLOR_LIMIT_OCCUPIED = 0.1;
 
-const eParkingColumn = document.getElementById('eparking-column')
-const eParkingValue = document.getElementById('eparking')
-const utilizationU1Column = document.getElementById('utilization-column-ug1')
-const utilizationU1Value = document.getElementById('utilization-ug1')
-const utilizationU2Column = document.getElementById('utilization-column-ug2')
-const utilizationU2Value = document.getElementById('utilization-ug2')
+const eParkingEGColumn = document.getElementById('eparking-eg-column')
+const eParkingEGValue = document.getElementById('eparking-eg')
+const eParkingO1Column = document.getElementById('eparking-o1-column')
+const eParkingO1Value = document.getElementById('eparking-o1')
+const utilizationEGColumn = document.getElementById('utilization-column-eg')
+const utilizationEGValue = document.getElementById('utilization-eg')
+const utilizationO1Column = document.getElementById('utilization-column-o1')
+const utilizationO1Value = document.getElementById('utilization-o1')
+const utilizationO2Column = document.getElementById('utilization-column-o2')
+const utilizationO2Value = document.getElementById('utilization-o2')
 let eparkingErrors = 0;
 let utilizationErrors = 0;
 
@@ -14,12 +18,20 @@ function getUtilization() {
     return getData("api?q=utilization");
 }
 
-function getUtilizationU2() {
-    return getData("api?q=u2-utilization");
+function getUtilizationO() {
+    return getData("api?q=o-utilization");
 }
 
-function getEParking() {
-    return getData("api?q=eparking");
+function getUtilizationO2() {
+    return getData("api?q=o2-utilization");
+}
+
+function getEParkingEG() {
+    return getData("api?q=eparking-eg");
+}
+
+function getEParkingO1() {
+    return getData("api?q=eparking-o1");
 }
 
 function getData(url) {
@@ -68,38 +80,52 @@ function applyColor(element, percentage) {
     }
 }
 
-function showEntryExitOccupancy(utilizationResult, utilizationU2Result) {
+function showEntryExitOccupancy(utilizationResult, utilizationOResult, utilizationO2Result) {
     const utilizationData = utilizationResult['results'][0]['data'][0];
-    const utilizationU2Data = utilizationU2Result['results'][0]['data'][0];
+    const utilizationOData = utilizationOResult['results'][0]['data'][0];
+    const utilizationO2Data = utilizationO2Result['results'][0]['data'][0];
 
     const capacity = utilizationData['ParkingUtilization.capacity'];
     let occupied = utilizationData['ParkingUtilization.occupied'];
     occupied = Math.min(Math.max(occupied, 0), capacity)
 
-    const capacityU2 = utilizationU2Data['ParkingUtilization.capacity'];
-    let occupiedU2 = utilizationU2Data['ParkingUtilization.occupied'];
-    occupiedU2 = Math.min(Math.max(occupiedU2, 0), capacityU2)
+    const capacityO = utilizationOData['ParkingUtilization.capacity'];
+    let occupiedO = utilizationOData['ParkingUtilization.occupied'];
+    occupiedO = Math.min(Math.max(occupiedO, 0), capacityO)
 
-    // occupied is the total occupacy, we need to subtract the occupied by U2
-    capacityU1 = capacity - capacityU2;
-    occupiedU1 = occupied - occupiedU2;
-    occupiedU1 = Math.min(Math.max(occupiedU1, 0), capacity - capacityU2)
+    const capacityO2 = utilizationO2Data['ParkingUtilization.capacity'];
+    let occupiedO2 = utilizationO2Data['ParkingUtilization.occupied'];
+    occupiedO2 = Math.min(Math.max(occupiedO2, 0), capacityO2)
 
-    utilizationU1 = occupiedU1 / capacityU1;
-    utilizationU2 = occupiedU2 / capacityU2;
-    freeU1 = 1 - utilizationU1
-    freeU2 = 1 - utilizationU2
+    // occupied is the total occupacy, occupiedO is for OG1 + OG2, we need to subtract to get EG + OG1 values
+    capacityO1 = capacityO - capacityO2;
+    occupiedO1 = occupiedO - occupiedO2;
+    occupiedO1 = Math.min(Math.max(occupiedO1, 0), capacityO1)
 
-    freeU1Rounded = Math.round(freeU1 * 100 / 5) * 5
-    freeU2Rounded = Math.round(freeU2 * 100 / 5) * 5
+    capacityEG = capacity - capacityO;
+    occupiedEG = occupied - occupiedO;
+    occupiedEG = Math.min(Math.max(occupiedEG, 0), capacityEG)
 
-    applyColor(utilizationU1Column, freeU1);
-    applyColor(utilizationU2Column, freeU2);
-    utilizationU1Value.innerHTML = `<p>${freeU1Rounded} %</p>`;
-    utilizationU2Value.innerHTML = `<p>${freeU2Rounded} %</p>`;
+    utilizationEG = occupiedEG / capacityEG;
+    utilizationO1 = occupiedO1 / capacityO1;
+    utilizationO2 = occupiedO2 / capacityO2;
+    freeEG = 1 - utilizationEG
+    freeO1 = 1 - utilizationO1
+    freeO2 = 1 - utilizationO2
+
+    freeEGRounded = Math.round(freeEG * 100 / 5) * 5
+    freeO1Rounded = Math.round(freeO1 * 100 / 5) * 5
+    freeO2Rounded = Math.round(freeO2 * 100 / 5) * 5
+
+    applyColor(utilizationEGColumn, freeEGRounded / 100);
+    applyColor(utilizationO1Column, freeO1Rounded / 100);
+    applyColor(utilizationO2Column, freeO2Rounded / 100);
+    utilizationEGValue.innerHTML = `<p>${freeEGRounded} %</p>`;
+    utilizationO1Value.innerHTML = `<p>${freeO1Rounded} %</p>`;
+    utilizationO2Value.innerHTML = `<p>${freeO2Rounded} %</p>`;
 }
 
-function showEParkingOccupancy(eParkingResult) {
+function showEParkingOccupancy(eParkingResult, eParkingColumn, eParkingValue) {
     const eparkingData = eParkingResult['results'][0]['data'][0];
     const eparkingCapacity = eparkingData['SpacebasedParkingUtilization.capacity'];
     let eparkingOccupied = eparkingData['SpacebasedParkingUtilization.occupied'];
@@ -111,27 +137,44 @@ function showEParkingOccupancy(eParkingResult) {
 }
 
 function displayData() {
-    getEParking().then((result) => {
-        showEParkingOccupancy(result);
+    getEParkingEG().then((result) => {
+        showEParkingOccupancy(result, eParkingEGColumn, eParkingEGValue);
         eparkingErrors = 0;
     }).catch(() => {
-        if (eparkingErrors > 10) {
-            eParkingValue.innerHTML = `<p>offline</p>`;
+        if (eparkingErrors > 20) {
+            eParkingEGValue.innerHTML = `<p>offline</p>`;
+            eParkingO1Value.innerHTML = `<p>offline</p>`;
             removeColor(eParkingColumn);
         } else {
             eparkingErrors += 1
         }
     });
 
-    Promise.all([getUtilization(), getUtilizationU2()]).then((results) => {
-        showEntryExitOccupancy(results[0], results[1]);
+    getEParkingO1().then((result) => {
+        showEParkingOccupancy(result, eParkingO1Column, eParkingO1Value);
+        eparkingErrors = 0;
+    }).catch(() => {
+        if (eparkingErrors > 20) {
+            eParkingEGValue.innerHTML = `<p>offline</p>`;
+            eParkingO1Value.innerHTML = `<p>offline</p>`;
+            removeColor(eParkingEGColumn);
+            removeColor(eParkingO1Column);
+        } else {
+            eparkingErrors += 1
+        }
+    });
+
+    Promise.all([getUtilization(), getUtilizationO(), getUtilizationO2()]).then((results) => {
+        showEntryExitOccupancy(results[0], results[1], results[2]);
         utilizationErrors = 0;
     }).catch(() => {
         if (utilizationErrors > 10) {
-            utilizationU1Value.innerHTML = `<p>offline</p>`;
-            utilizationU2Value.innerHTML = `<p>offline</p>`;
-            removeColor(utilizationU1Column);
-            removeColor(utilizationU2Column);
+            utilizationEGValue.innerHTML = `<p>offline</p>`;
+            utilizationO1Value.innerHTML = `<p>offline</p>`;
+            utilizationO2Value.innerHTML = `<p>offline</p>`;
+            removeColor(utilizationEGColumn);
+            removeColor(utilizationO1Column);
+            removeColor(utilizationO2Column);
         } else {
             utilizationErrors += 1;
         }
