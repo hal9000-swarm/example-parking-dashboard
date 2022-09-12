@@ -123,6 +123,8 @@ function showEntryExitOccupancy(utilizationResult, utilizationOResult, utilizati
     utilizationEGValue.innerHTML = `<p>${freeEGRounded} %</p>`;
     utilizationO1Value.innerHTML = `<p>${freeO1Rounded} %</p>`;
     utilizationO2Value.innerHTML = `<p>${freeO2Rounded} %</p>`;
+
+    console.debug(`occupied EG: ${occupiedEG}\noccupied OG1: ${occupiedO1}\noccupied OG2: ${occupiedO2}\n`)
 }
 
 function showEParkingOccupancy(eParkingResult, eParkingColumn, eParkingValue) {
