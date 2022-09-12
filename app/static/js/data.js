@@ -97,6 +97,8 @@ function showEntryExitOccupancy(utilizationResult, utilizationU2Result) {
     applyColor(utilizationU2Column, freeU2);
     utilizationU1Value.innerHTML = `<p>${freeU1Rounded} %</p>`;
     utilizationU2Value.innerHTML = `<p>${freeU2Rounded} %</p>`;
+
+    console.debug(`occupied U1: ${occupiedU1}\noccupied U2: ${occupiedU2}\n`)
 }
 
 function showEParkingOccupancy(eParkingResult) {

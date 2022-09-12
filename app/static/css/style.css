@@ -16,10 +16,18 @@ body {
     align-items: center;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1400px) {
+    .header {
+        margin-bottom: 7rem;
+    }
+
     .column {
         width: 100%;
-        padding-bottom: 3rem;
+        padding-bottom: 7rem;
+    }
+
+    .column:last-child {
+        padding-bottom: 0;
     }
 }
 
