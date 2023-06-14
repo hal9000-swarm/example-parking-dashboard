@@ -72,26 +72,26 @@ function showEntryExitOccupancy(utilizationResult, utilizationU2Result) {
     const utilizationData = utilizationResult['results'][0]['data'][0];
     const utilizationU2Data = utilizationU2Result['results'][0]['data'][0];
 
-    const capacity = utilizationData['ParkingUtilization.capacity'];
-    let occupied = utilizationData['ParkingUtilization.occupied'];
+    const capacity = Number(utilizationData['ParkingUtilization.capacity']);
+    let occupied = Number(utilizationData['ParkingUtilization.occupied']);
     occupied = Math.min(Math.max(occupied, 0), capacity)
 
-    const capacityU2 = utilizationU2Data['ParkingUtilization.capacity'];
-    let occupiedU2 = utilizationU2Data['ParkingUtilization.occupied'];
+    const capacityU2 = Number(utilizationU2Data['ParkingUtilization.capacity']);
+    let occupiedU2 = Number(utilizationU2Data['ParkingUtilization.occupied']);
     occupiedU2 = Math.min(Math.max(occupiedU2, 0), capacityU2)
 
     // occupied is the total occupacy, we need to subtract the occupied by U2
-    capacityU1 = capacity - capacityU2;
-    occupiedU1 = occupied - occupiedU2;
+    const capacityU1 = capacity - capacityU2;
+    let occupiedU1 = occupied - occupiedU2;
     occupiedU1 = Math.min(Math.max(occupiedU1, 0), capacity - capacityU2)
 
-    utilizationU1 = occupiedU1 / capacityU1;
-    utilizationU2 = occupiedU2 / capacityU2;
-    freeU1 = 1 - utilizationU1
-    freeU2 = 1 - utilizationU2
+    const utilizationU1 = occupiedU1 / capacityU1;
+    const utilizationU2 = occupiedU2 / capacityU2;
+    const freeU1 = 1 - utilizationU1
+    const freeU2 = 1 - utilizationU2
 
-    freeU1Rounded = Math.round(freeU1 * 100 / 5) * 5
-    freeU2Rounded = Math.round(freeU2 * 100 / 5) * 5
+    const freeU1Rounded = Math.round(freeU1 * 100 / 5) * 5
+    const freeU2Rounded = Math.round(freeU2 * 100 / 5) * 5
 
     applyColor(utilizationU1Column, freeU1);
     applyColor(utilizationU2Column, freeU2);
@@ -103,11 +103,11 @@ function showEntryExitOccupancy(utilizationResult, utilizationU2Result) {
 
 function showEParkingOccupancy(eParkingResult) {
     const eparkingData = eParkingResult['results'][0]['data'][0];
-    const eparkingCapacity = eparkingData['SpacebasedParkingUtilization.capacity'];
-    let eparkingOccupied = eparkingData['SpacebasedParkingUtilization.occupied'];
+    const eparkingCapacity = Number(eparkingData['SpacebasedParkingUtilization.capacity']);
+    let eparkingOccupied = Number(eparkingData['SpacebasedParkingUtilization.occupied']);
 
     eparkingOccupied = Math.min(Math.max(eparkingOccupied, 0), eparkingCapacity)
-    eparkingFree = eparkingCapacity - eparkingOccupied
+    const eparkingFree = eparkingCapacity - eparkingOccupied
     applyColor(eParkingColumn, eparkingFree / eparkingCapacity);
     eParkingValue.innerHTML = `<p>${eparkingFree} / ${eparkingCapacity}</p>`;
 }

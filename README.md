@@ -10,7 +10,7 @@ This is a simple example of how to integrate the Swarm Analytics data API and us
 The application is packed into a docker container, which can be run from the command line.
 
 ```
-docker run -e CLIENT_ID=<your-client-id> -e CLIENT_SECRET=<your-client-secret> -e TENANT_ID=<your-tenant-id> -p 80:8080 -d swarm.azurecr.io/hkp-parking-dashboard:latest
+docker run -e CLIENT_ID=<your-client-id> -e CLIENT_SECRET=<your-client-secret> -e APPLICATION_SCOPE=<your-application-scope-id> -p 80:8080 -d swarm.azurecr.io/hkp-parking-dashboard:latest
 ```
 
 The dashboard is now available at [http://localhost:80](http://localhost:80) and will refresh automatically every 10 seconds.

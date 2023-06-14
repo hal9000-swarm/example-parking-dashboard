@@ -20,7 +20,8 @@ const checkStatus = response => {
 
 async function getData(query, authtoken) {
     let headers = {
-        "Authorization": authtoken.accessToken
+        "Authorization": authtoken.accessToken,
+        "Tenant": process.env.CLIENT_ID
     }
     try {
         const response = await fetch(query, {headers: headers})
