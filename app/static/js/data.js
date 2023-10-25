@@ -139,24 +139,17 @@ function showEParkingOccupancy(eParkingResult, eParkingColumn, eParkingValue) {
 }
 
 function displayData() {
+    let utilizationResult;
+    let utilizationOResult;
     getEParkingEG().then((result) => {
         showEParkingOccupancy(result, eParkingEGColumn, eParkingEGValue);
-        eparkingErrors = 0;
-    }).catch(() => {
-        if (eparkingErrors > 20) {
-            eParkingEGValue.innerHTML = `<p>offline</p>`;
-            eParkingO1Value.innerHTML = `<p>offline</p>`;
-            removeColor(eParkingColumn);
-        } else {
-            eparkingErrors += 1
-        }
-    });
-
-    getEParkingO1().then((result) => {
+        return getEParkingO1(); // Chain getEParkingO1 after getEParkingEG
+    }).then((result) => {
         showEParkingOccupancy(result, eParkingO1Column, eParkingO1Value);
         eparkingErrors = 0;
+        return getUtilization(); // Chain getUtilization after getEParkingO1
     }).catch(() => {
-        if (eparkingErrors > 20) {
+        if (eparkingErrors > 2) {
             eParkingEGValue.innerHTML = `<p>offline</p>`;
             eParkingO1Value.innerHTML = `<p>offline</p>`;
             removeColor(eParkingEGColumn);
@@ -164,13 +157,20 @@ function displayData() {
         } else {
             eparkingErrors += 1
         }
-    });
-
-    Promise.all([getUtilization(), getUtilizationO(), getUtilizationO2()]).then((results) => {
-        showEntryExitOccupancy(results[0], results[1], results[2]);
+        return getUtilization();
+    }).then((utilizationResultFromGetUtilization) => {
+        utilizationResult = utilizationResultFromGetUtilization;
+        return getUtilizationO(); // Chain getUtilizationO after getUtilization
+        }
+    ).then((utilizationOResultFromGetUtilizationO) => {
+        utilizationOResult = utilizationOResultFromGetUtilizationO;
+        return getUtilizationO2(); // Chain getUtilizationO2 after getUtilizationO
+    }).then((utilizationO2Result) => {
+        showEntryExitOccupancy(utilizationResult, utilizationOResult, utilizationO2Result);
         utilizationErrors = 0;
-    }).catch(() => {
-        if (utilizationErrors > 10) {
+    }).catch((utilizationError) => {
+        console.error("Error in getting Utilization:", utilizationError);
+        if (utilizationErrors > 2) {
             utilizationEGValue.innerHTML = `<p>offline</p>`;
             utilizationO1Value.innerHTML = `<p>offline</p>`;
             utilizationO2Value.innerHTML = `<p>offline</p>`;
@@ -186,7 +186,7 @@ function displayData() {
 // initial load
 displayData();
 
-// refresh data every 10 seconds
+// refresh data every 2 minutes
 setInterval(function () {
     displayData();
-}, 10000);
+}, 120000);
