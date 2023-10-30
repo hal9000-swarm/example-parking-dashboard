@@ -113,37 +113,54 @@ function showEParkingOccupancy(eParkingResult) {
 }
 
 function displayData() {
-    getEParking().then((result) => {
-        showEParkingOccupancy(result);
-        eparkingErrors = 0;
-    }).catch(() => {
-        if (eparkingErrors > 10) {
-            eParkingValue.innerHTML = `<p>offline</p>`;
-            removeColor(eParkingColumn);
-        } else {
-            eparkingErrors += 1
-        }
-    });
+    let utilizationResult;
 
-    Promise.all([getUtilization(), getUtilizationU2()]).then((results) => {
-        showEntryExitOccupancy(results[0], results[1]);
-        utilizationErrors = 0;
-    }).catch(() => {
-        if (utilizationErrors > 10) {
-            utilizationU1Value.innerHTML = `<p>offline</p>`;
-            utilizationU2Value.innerHTML = `<p>offline</p>`;
-            removeColor(utilizationU1Column);
-            removeColor(utilizationU2Column);
-        } else {
-            utilizationErrors += 1;
-        }
-    });
+    getEParking()
+        .then((result) => {
+            showEParkingOccupancy(result);
+            eparkingErrors = 0;
+            return getUtilization(); // Chain getUtilization after getEParking
+        })
+        .catch((eparkingError) => {
+            // Handle errors from getEParking here
+            console.error("Error in getEParking:", eparkingError);
+            if (eparkingErrors > 2) {
+                eParkingValue.innerHTML = `<p>offline</p>`;
+                removeColor(eParkingColumn);
+            } else {
+                eparkingErrors += 1;
+            }
+            // Still chain getUtilization after getEParking failed
+            return getUtilization();
+        })
+        .then((utilizationResultFromGetUtilization) => {
+                utilizationResult = utilizationResultFromGetUtilization;
+                return getUtilizationU2(); // Chain getUtilizationU2 after getUtilization
+        })
+        .then((utilizationU2Result) => {
+            showEntryExitOccupancy(utilizationResult, utilizationU2Result);
+            utilizationErrors = 0;
+        })
+        .catch((utilizationError) => {
+            // Handle errors from getUtilization or getUtilizationU2 here
+            console.error("Error in getUtilization or getUtilizationU2:", utilizationError);
+            if (utilizationErrors > 2) {
+                utilizationU1Value.innerHTML = `<p>offline</p>`;
+                utilizationU2Value.innerHTML = `<p>offline</p>`;
+                removeColor(utilizationU1Column);
+                removeColor(utilizationU2Column);
+            } else {
+                utilizationErrors += 1;
+            }
+        });
 }
+
+
 
 // initial load
 displayData();
 
-// refresh data every 10 seconds
+// refresh data every 120 seconds
 setInterval(function () {
     displayData();
-}, 10000);
+}, 120000);
